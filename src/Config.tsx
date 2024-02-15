@@ -12,9 +12,8 @@ const Config = () => {
         const newPlayerList = players.slice(0);
         newPlayerList.push({
             id: randomUUID(),
-            // id: new Date().toISOString(),
             name: '',
-            score: 0,
+            score: '0',
         });
         setPlayers(newPlayerList);
     };
@@ -43,7 +42,7 @@ const Config = () => {
         setPlayers(newPlayerList);
     };
 
-    const onModifyPlayerScore = (player: Player, delta: number) => {
+    const onModifyPlayerScore = (player: Player, score: string) => {
         const index = players.findIndex(({ id }) => {
             return id === player.id;
         });
@@ -51,7 +50,7 @@ const Config = () => {
         if (index === -1) return;
 
         const newPlayerList = players.slice(0);
-        newPlayerList[index].score += delta;
+        newPlayerList[index].score = score;
         setPlayers(newPlayerList);
     };
 
@@ -64,8 +63,9 @@ const Config = () => {
                     return (
                         <PlayerComponent
                             player={player}
-                            onIncrease={() => onModifyPlayerScore(player, +1)}
-                            onDecrease={() => onModifyPlayerScore(player, -1)}
+                            onChangeScore={(score) => {
+                                onModifyPlayerScore(player, score);
+                            }}
                             onChangeName={(name) =>
                                 onModifyPlayerName(player, name)
                             }

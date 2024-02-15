@@ -1,7 +1,7 @@
 type Player = {
     id: string;
     name: string;
-    score: number;
+    score: string;
 };
 
 export { Player };
