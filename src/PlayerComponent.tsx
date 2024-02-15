@@ -15,8 +15,8 @@ const PlayerComponent = ({
     player,
     onChangeScore,
     onChangeName,
-    onRemove,
-}: Props) => {
+}: // onRemove,
+Props) => {
     const onChangeScoreText = (score: string) => {
         const sanitizedScore =
             score.at(-1) === '.' ? score.substring(0, score.length - 1) : score;
@@ -47,15 +47,33 @@ const PlayerComponent = ({
                 value={player.score}
                 onChangeText={onChangeScoreText}
             />
-            <Button icon="minus" onPress={() => onChangeScoreByButton(-1)}>
-                {' '}
+            <Button
+                icon="minus-circle-multiple"
+                onPress={() => onChangeScoreByButton(-5)}
+            >
+                {''}
             </Button>
-            <Button icon="plus" onPress={() => onChangeScoreByButton(+1)}>
-                {' '}
+            <Button
+                icon="minus-circle"
+                onPress={() => onChangeScoreByButton(-1)}
+            >
+                {''}
             </Button>
-            <Button icon="delete" onPress={onRemove}>
-                {' '}
+            <Button
+                icon="plus-circle"
+                onPress={() => onChangeScoreByButton(+1)}
+            >
+                {''}
             </Button>
+            <Button
+                icon="plus-circle-multiple"
+                onPress={() => onChangeScoreByButton(+5)}
+            >
+                {''}
+            </Button>
+            {/* <Button icon="delete" onPress={onRemove}>
+                {''}
+            </Button> */}
         </View>
     );
 };
@@ -66,7 +84,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     text: {
-        minWidth: 120,
+        width: 120,
     },
 });
 

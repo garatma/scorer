@@ -74,7 +74,7 @@ const Config = () => {
                     );
                 }}
             ></FlatList>
-            <Button icon="plus" onPress={onAddUser}>
+            <Button icon="plus-circle" onPress={onAddUser}>
                 Add user
             </Button>
         </View>
