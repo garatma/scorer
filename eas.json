@@ -10,10 +10,10 @@
         "preview": {
             "distribution": "internal"
         },
-        "production": {}
+        "production": {},
+        "image": "default"
     },
     "submit": {
         "production": {}
-    },
-    "image": "default"
+    }
 }
