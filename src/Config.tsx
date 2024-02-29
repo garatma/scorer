@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Button, TextInput } from 'react-native-paper';
 import { Player as Player } from './types';
 import PlayerComponent from './PlayerComponent';
 import { randomUUID } from 'expo-crypto';
-import { getData, storeData } from './storage';
+import { setFromStorage, storeData } from './storage';
 
 const playersKey = 'players';
+const titleKey = 'title';
 
 const Config = () => {
+    const [title, setTitle] = useState('');
     const [players, setPlayers] = useState<Player[]>([]);
 
     const onAddUser = () => {
@@ -19,7 +21,6 @@ const Config = () => {
             score: '0',
         });
         setPlayers(newPlayerList);
-        storeData<Player[]>(playersKey, newPlayerList);
     };
 
     const onModifyPlayerName = (player: Player, name: string) => {
@@ -32,7 +33,6 @@ const Config = () => {
         const newPlayerList = players.slice(0);
         newPlayerList[index].name = name;
         setPlayers(newPlayerList);
-        storeData<Player[]>(playersKey, newPlayerList);
     };
 
     const onRemovePlayer = (player: Player) => {
@@ -45,7 +45,6 @@ const Config = () => {
         const newPlayerList = players.slice(0);
         newPlayerList.splice(index, 1);
         setPlayers(newPlayerList);
-        storeData<Player[]>(playersKey, newPlayerList);
     };
 
     const onModifyPlayerScore = (player: Player, score: string) => {
@@ -58,21 +57,32 @@ const Config = () => {
         const newPlayerList = players.slice(0);
         newPlayerList[index].score = score;
         setPlayers(newPlayerList);
-        storeData<Player[]>(playersKey, newPlayerList);
     };
 
     useEffect(() => {
-        const fetchStoragePlayers = async () => {
-            const storagePlayers = await getData<Player[]>(playersKey);
-            console.log(storagePlayers);
-            if (storagePlayers !== undefined) setPlayers(storagePlayers);
-        };
-
-        fetchStoragePlayers();
+        // on first run: init state with storage
+        setFromStorage<Player[]>(playersKey, setPlayers);
+        setFromStorage<string>(titleKey, setTitle);
     }, []);
+
+    useEffect(() => {
+        // update title in storage when needed
+        storeData<string>(titleKey, title);
+    }, [title]);
+
+    useEffect(() => {
+        // update players in storage when needed
+        storeData<Player[]>(playersKey, players);
+    }, [players]);
 
     return (
         <View style={styles.view}>
+            <TextInput
+                placeholder="Session title"
+                value={title}
+                onChangeText={setTitle}
+                autoFocus
+            ></TextInput>
             <FlatList
                 data={players}
                 keyExtractor={(item) => item.id}

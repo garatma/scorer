@@ -18,4 +18,12 @@ const storeData = async <T>(key: string, value: T) => {
     }
 };
 
-export { getData, storeData };
+const setFromStorage = async <T>(
+    key: string,
+    setter: React.Dispatch<React.SetStateAction<T>>,
+) => {
+    const storagePlayers = await getData<T>(key);
+    if (storagePlayers !== undefined) setter(storagePlayers);
+};
+
+export { getData, storeData, setFromStorage };
