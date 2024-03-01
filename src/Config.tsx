@@ -4,7 +4,7 @@ import { Button, TextInput } from 'react-native-paper';
 import { Player as Player } from './types';
 import PlayerComponent from './PlayerComponent';
 import { randomUUID } from 'expo-crypto';
-import { setFromStorage, storeData } from './storage';
+import { fromStorageDo, intoStorage } from './storage';
 
 const playersKey = 'players';
 const titleKey = 'title';
@@ -21,6 +21,7 @@ const Config = () => {
             score: '0',
         });
         setPlayers(newPlayerList);
+        intoStorage<Player[]>(playersKey, players);
     };
 
     const onModifyPlayerName = (player: Player, name: string) => {
@@ -33,6 +34,7 @@ const Config = () => {
         const newPlayerList = players.slice(0);
         newPlayerList[index].name = name;
         setPlayers(newPlayerList);
+        intoStorage<Player[]>(playersKey, players);
     };
 
     const onRemovePlayer = (player: Player) => {
@@ -45,6 +47,7 @@ const Config = () => {
         const newPlayerList = players.slice(0);
         newPlayerList.splice(index, 1);
         setPlayers(newPlayerList);
+        intoStorage<Player[]>(playersKey, players);
     };
 
     const onModifyPlayerScore = (player: Player, score: string) => {
@@ -57,30 +60,26 @@ const Config = () => {
         const newPlayerList = players.slice(0);
         newPlayerList[index].score = score;
         setPlayers(newPlayerList);
+        intoStorage<Player[]>(playersKey, players);
+    };
+
+    const onChangeTitle = (newTitle: string) => {
+        setTitle(newTitle);
+        intoStorage<string>(titleKey, newTitle);
     };
 
     useEffect(() => {
         // on first run: init state with storage
-        setFromStorage<Player[]>(playersKey, setPlayers);
-        setFromStorage<string>(titleKey, setTitle);
+        fromStorageDo<Player[]>(playersKey, setPlayers);
+        fromStorageDo<string>(titleKey, setTitle);
     }, []);
-
-    useEffect(() => {
-        // update title in storage when needed
-        storeData<string>(titleKey, title);
-    }, [title]);
-
-    useEffect(() => {
-        // update players in storage when needed
-        storeData<Player[]>(playersKey, players);
-    }, [players]);
 
     return (
         <View style={styles.view}>
             <TextInput
                 placeholder="Session title"
                 value={title}
-                onChangeText={setTitle}
+                onChangeText={onChangeTitle}
                 autoFocus
             ></TextInput>
             <FlatList

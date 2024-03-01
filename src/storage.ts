@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const getData = async <T>(key: string): Promise<T | undefined> => {
+const fromStorage = async <T>(key: string): Promise<T | undefined> => {
     try {
         const jsonValue = await AsyncStorage.getItem(key);
         return jsonValue != null ? JSON.parse(jsonValue) : undefined;
@@ -9,7 +9,15 @@ const getData = async <T>(key: string): Promise<T | undefined> => {
     }
 };
 
-const storeData = async <T>(key: string, value: T) => {
+const fromStorageDo = async <T>(
+    key: string,
+    setter: React.Dispatch<React.SetStateAction<T>>,
+) => {
+    const storageValue = await fromStorage<T>(key);
+    if (storageValue !== undefined) setter(storageValue);
+};
+
+const intoStorage = async <T>(key: string, value: T) => {
     try {
         const jsonValue = JSON.stringify(value);
         await AsyncStorage.setItem(key, jsonValue);
@@ -18,12 +26,12 @@ const storeData = async <T>(key: string, value: T) => {
     }
 };
 
-const setFromStorage = async <T>(
-    key: string,
-    setter: React.Dispatch<React.SetStateAction<T>>,
-) => {
-    const storagePlayers = await getData<T>(key);
-    if (storagePlayers !== undefined) setter(storagePlayers);
+const removeFromStorage = async (key: string) => {
+    try {
+        await AsyncStorage.removeItem(key);
+    } catch (e) {
+        // TODO: handle error
+    }
 };
 
-export { getData, storeData, setFromStorage };
+export { fromStorage, fromStorageDo, intoStorage, removeFromStorage };

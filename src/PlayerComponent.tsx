@@ -44,8 +44,10 @@ Props) => {
             />
             <TextInput
                 keyboardType="numeric"
+                placeholder="Score"
                 value={player.score}
                 onChangeText={onChangeScoreText}
+                style={styles.score}
             />
             <Button
                 icon="minus-circle-multiple"
@@ -79,13 +81,9 @@ Props) => {
 };
 
 const styles = StyleSheet.create({
-    view: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    text: {
-        width: 120,
-    },
+    view: { flexDirection: 'row', alignItems: 'center' },
+    text: { width: 120 },
+    score: { width: 75 },
 });
 
 export default PlayerComponent;
