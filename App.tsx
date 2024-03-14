@@ -12,7 +12,6 @@ const App = () => {
     return (
         <SessionProvider>
             <ColorSchemeProvider>
-                <StatusBar style="auto" />
                 <AppWithPaper />
             </ColorSchemeProvider>
         </SessionProvider>
@@ -20,11 +19,17 @@ const App = () => {
 };
 
 const AppWithPaper = () => {
-    const { paperTheme } = useColorScheme();
+    const { paperTheme, colorScheme } = useColorScheme();
+    const statusBarBackgroundColor = paperTheme.colors?.background;
+    const statusBarStyle = colorScheme === 'dark' ? 'light' : 'dark';
 
     return (
         <PaperProvider theme={paperTheme}>
             <SessionProvider>
+                <StatusBar
+                    style={statusBarStyle}
+                    backgroundColor={statusBarBackgroundColor}
+                />
                 <Home />
             </SessionProvider>
         </PaperProvider>
