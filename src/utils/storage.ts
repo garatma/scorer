@@ -11,7 +11,7 @@ const fromStorage = async <T>(key: string): Promise<T | undefined> => {
 
 const fromStorageDo = async <T>(
     key: string,
-    setter: React.Dispatch<React.SetStateAction<T>>,
+    setter: (value: Awaited<T>) => void,
 ) => {
     const storageValue = await fromStorage<T>(key);
     if (storageValue !== undefined) setter(storageValue);

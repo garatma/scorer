@@ -42,7 +42,6 @@ Props) => {
                 placeholder="New player"
                 value={player.name}
                 onChangeText={onChangeName}
-                autoFocus
                 editable={editable}
             />
             <TextInput

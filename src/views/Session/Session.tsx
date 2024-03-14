@@ -5,7 +5,6 @@ import { useSession, useSessionDispatch } from '../../context/SessionContext';
 import PlayerComponent from './PlayerComponent';
 
 const Session = () => {
-    // TODO: merge into one
     const session = useSession();
     const dispatch = useSessionDispatch();
 

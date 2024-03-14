@@ -1,9 +1,25 @@
-import React, { Dispatch, createContext, useContext, useReducer } from 'react';
+import React, {
+    Dispatch,
+    createContext,
+    useContext,
+    useEffect,
+    useReducer,
+} from 'react';
 import { ColorSchemeName } from 'react-native';
 import { ThemeProp } from 'react-native-paper/lib/typescript/types';
 import { darkPaperColorScheme, lightPaperColorScheme } from '../colorSchemes';
+import { fromStorageDo, intoStorage } from '../../utils/storage';
 
-type ColorSchemeAction = { type: 'changeColorScheme' };
+const colorSchemeKey = 'colorScheme';
+
+type ColorSchemeAction =
+    | {
+          type: 'colorScheme/Toggle';
+      }
+    | {
+          type: 'colorScheme/fromStorage';
+          payload: ColorSchemeName;
+      };
 
 type ColorScheme = {
     colorScheme: ColorSchemeName;
@@ -24,14 +40,14 @@ const initialColorScheme = darkColorScheme;
 
 const ColorSchemeContext = createContext<ColorScheme>(initialColorScheme);
 const ColorSchemeDispatchContext = createContext<Dispatch<ColorSchemeAction>>(
-    undefined as unknown as Dispatch<ColorSchemeAction>,
-); // TODO: fix typings
+    {} as Dispatch<ColorSchemeAction>,
+);
 
-export function useColorScheme() {
+function useColorScheme() {
     return useContext(ColorSchemeContext);
 }
 
-export function useColorSchemeDispatch() {
+function useColorSchemeDispatch() {
     return useContext(ColorSchemeDispatchContext);
 }
 
@@ -40,11 +56,20 @@ function colorSchemeReducer(
     action: ColorSchemeAction,
 ): ColorScheme {
     switch (action.type) {
-        case 'changeColorScheme': {
-            // TODO: store value in storage
+        case 'colorScheme/Toggle': {
+            intoStorage<ColorSchemeName>(
+                colorSchemeKey,
+                colorScheme.colorScheme === 'dark' ? 'light' : 'dark',
+            );
+
             return colorScheme.colorScheme === 'dark'
                 ? lightColorScheme
                 : darkColorScheme;
+        }
+        case 'colorScheme/fromStorage': {
+            return action.payload === 'dark'
+                ? darkColorScheme
+                : lightColorScheme;
         }
         default: {
             throw Error('Unknown action: ' + action);
@@ -62,7 +87,11 @@ function ColorSchemeProvider({ children }: ColorSchemeProviderProps) {
         initialColorScheme,
     );
 
-    // TODO: initial value from storage
+    useEffect(() => {
+        fromStorageDo<ColorSchemeName>(colorSchemeKey, (value) =>
+            dispatch({ type: 'colorScheme/fromStorage', payload: value }),
+        );
+    }, []);
 
     return (
         <ColorSchemeContext.Provider value={colorScheme}>
@@ -73,4 +102,4 @@ function ColorSchemeProvider({ children }: ColorSchemeProviderProps) {
     );
 }
 
-export default ColorSchemeProvider;
+export { useColorScheme, useColorSchemeDispatch, ColorSchemeProvider };

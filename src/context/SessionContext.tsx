@@ -1,6 +1,12 @@
-import React, { Dispatch, createContext, useContext, useReducer } from 'react';
+import React, {
+    Dispatch,
+    createContext,
+    useContext,
+    useEffect,
+    useReducer,
+} from 'react';
 import { Player, Session } from '../views/Session/types';
-import { intoStorage } from '../utils/storage';
+import { fromStorageDo, intoStorage } from '../utils/storage';
 import { randomUUID } from 'expo-crypto';
 
 type SessionAction =
@@ -20,7 +26,15 @@ type SessionAction =
           };
       }
     | {
+          type: 'player/fromStorage';
+          payload: Player[];
+      }
+    | {
           type: 'title';
+          payload: string;
+      }
+    | {
+          type: 'title/fromStorage';
           payload: string;
       };
 
@@ -32,24 +46,16 @@ const initialSession = {
 const titleKey = 'title';
 const playersKey = 'players';
 
-// const useSessionContext = () => {
-//     useEffect(() => {
-//         // on first run: init state with storage
-//         fromStorageDo<Player[]>(playersKey, setPlayers);
-//         fromStorageDo<string>(titleKey, setTitle);
-//     }, []);
-// };
-
 const SessionContext = createContext<Session>(initialSession);
 const SessionDispatchContext = createContext<Dispatch<SessionAction>>(
-    undefined as unknown as Dispatch<SessionAction>,
-); // TODO: fix typings
+    {} as Dispatch<SessionAction>,
+);
 
-export function useSession() {
+function useSession() {
     return useContext(SessionContext);
 }
 
-export function useSessionDispatch() {
+function useSessionDispatch() {
     return useContext(SessionDispatchContext);
 }
 
@@ -79,6 +85,9 @@ function sessionReducer(session: Session, action: SessionAction): Session {
             intoStorage<Player[]>(playersKey, newPlayerList);
             return { ...session, players: newPlayerList };
         }
+        case 'player/fromStorage': {
+            return { ...session, players: action.payload };
+        }
         case 'player/remove': {
             const index = session.players.findIndex(({ id }) => {
                 return id === action.payload;
@@ -95,6 +104,9 @@ function sessionReducer(session: Session, action: SessionAction): Session {
             intoStorage<string>(titleKey, action.payload);
             return { ...session, title: action.payload };
         }
+        case 'title/fromStorage': {
+            return { ...session, title: action.payload };
+        }
         default: {
             throw Error('Unknown action: ' + action);
         }
@@ -108,7 +120,14 @@ type SessionProviderProps = {
 function SessionProvider({ children }: SessionProviderProps) {
     const [session, dispatch] = useReducer(sessionReducer, initialSession);
 
-    // TODO: initial session from storage
+    useEffect(() => {
+        fromStorageDo<Player[]>(playersKey, (value) =>
+            dispatch({ type: 'player/fromStorage', payload: value }),
+        );
+        fromStorageDo<string>(titleKey, (value) =>
+            dispatch({ type: 'title/fromStorage', payload: value }),
+        );
+    }, []);
 
     return (
         <SessionContext.Provider value={session}>
@@ -119,5 +138,4 @@ function SessionProvider({ children }: SessionProviderProps) {
     );
 }
 
-export default SessionProvider;
-export { titleKey, playersKey };
+export { useSession, useSessionDispatch, SessionProvider };

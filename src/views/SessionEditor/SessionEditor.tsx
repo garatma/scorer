@@ -1,20 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import { useSession, useSessionDispatch } from '../../context/SessionContext';
 import PlayerComponent from '../Session/PlayerComponent';
 
 const SessionEditor = () => {
-    // TODO: merge into one
     const session = useSession();
     const dispatch = useSessionDispatch();
-
-    useEffect(() => {
-        // TODO: move this to session context
-        // on first run: init state with storage
-        // fromStorageDo<Player[]>(playersKey, setPlayers);
-        // fromStorageDo<string>(titleKey, setTitle);
-    }, []);
 
     return (
         <View style={styles.view}>

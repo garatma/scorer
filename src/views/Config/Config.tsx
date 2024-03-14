@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import {
     useColorScheme,
     useColorSchemeDispatch,
@@ -11,14 +11,18 @@ const Config = () => {
     const dispatch = useColorSchemeDispatch();
 
     return (
-        <View>
+        <View style={styles.view}>
             <LabeledSwitch
                 text="Dark theme"
                 value={colorScheme === 'dark'}
-                toggle={() => dispatch({ type: 'changeColorScheme' })}
+                toggle={() => dispatch({ type: 'colorScheme/Toggle' })}
             ></LabeledSwitch>
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    view: { paddingRight: 20, paddingLeft: 20 },
+});
 
 export default Config;

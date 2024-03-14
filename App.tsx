@@ -1,17 +1,18 @@
 import React from 'react';
-import { StatusBar } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { PaperProvider } from 'react-native-paper';
 import Home from './src/Home';
-import ColorSchemeProvider, {
+import { SessionProvider } from './src/context/SessionContext';
+import {
+    ColorSchemeProvider,
     useColorScheme,
 } from './src/colorSchemes/context/ColorSchemeContext';
-import SessionProvider from './src/context/SessionContext';
 
 const App = () => {
     return (
         <SessionProvider>
             <ColorSchemeProvider>
-                <StatusBar></StatusBar>
+                <StatusBar style="auto" />
                 <AppWithPaper />
             </ColorSchemeProvider>
         </SessionProvider>
