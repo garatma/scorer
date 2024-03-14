@@ -8,13 +8,15 @@ type Props = {
     player: Player;
     onChangeScore: (score: string) => void;
     onChangeName: (name: string) => void;
-    onRemove: () => void;
+    onRemove?: () => void;
+    editable: boolean;
 };
 
 const PlayerComponent = ({
     player,
     onChangeScore,
     onChangeName,
+    editable,
 }: // onRemove,
 Props) => {
     const onChangeScoreText = (score: string) => {
@@ -41,6 +43,7 @@ Props) => {
                 value={player.name}
                 onChangeText={onChangeName}
                 autoFocus
+                editable={editable}
             />
             <TextInput
                 keyboardType="numeric"
