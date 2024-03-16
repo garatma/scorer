@@ -1,13 +1,13 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
-import { Player } from './types';
+import { Player } from '../views/Session/types';
 import { TextInput } from 'react-native-paper';
 
 type Props = {
     player: Player;
     onChangeScore: (score: string) => void;
-    onChangeName: (name: string) => void;
+    onChangeName?: (name: string) => void;
     onRemove?: () => void;
     editable: boolean;
 };

@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
-import { useSession, useSessionDispatch } from '../../context/SessionContext';
-import PlayerComponent from '../Session/PlayerComponent';
+import {
+    SessionAction,
+    useSession,
+    useSessionDispatch,
+} from '../../contexts/SessionContext';
+import PlayerComponent from '../../components/PlayerComponent';
+import { Player } from '../Session/types';
 
 const SessionEditor = () => {
     const session = useSession();
@@ -21,38 +26,7 @@ const SessionEditor = () => {
                 data={session.players}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item: player }) => {
-                    return (
-                        <PlayerComponent
-                            player={player}
-                            editable
-                            onChangeScore={(score) => {
-                                dispatch({
-                                    type: 'player/update',
-                                    payload: {
-                                        id: player.id,
-                                        key: 'score',
-                                        value: score,
-                                    },
-                                });
-                            }}
-                            onChangeName={(name) => {
-                                dispatch({
-                                    type: 'player/update',
-                                    payload: {
-                                        id: player.id,
-                                        key: 'name',
-                                        value: name,
-                                    },
-                                });
-                            }}
-                            onRemove={() =>
-                                dispatch({
-                                    type: 'player/remove',
-                                    payload: player.id,
-                                })
-                            }
-                        />
-                    );
+                    return getPlayer(player, dispatch);
                 }}
             ></FlatList>
             <Button
@@ -68,5 +42,40 @@ const SessionEditor = () => {
 const styles = StyleSheet.create({
     view: {},
 });
+
+const getPlayer = (player: Player, dispatch: Dispatch<SessionAction>) => {
+    return (
+        <PlayerComponent
+            player={player}
+            editable
+            onChangeScore={(score) => {
+                dispatch({
+                    type: 'player/update',
+                    payload: {
+                        id: player.id,
+                        key: 'score',
+                        value: score,
+                    },
+                });
+            }}
+            onChangeName={(name) => {
+                dispatch({
+                    type: 'player/update',
+                    payload: {
+                        id: player.id,
+                        key: 'name',
+                        value: name,
+                    },
+                });
+            }}
+            onRemove={() =>
+                dispatch({
+                    type: 'player/remove',
+                    payload: player.id,
+                })
+            }
+        />
+    );
+};
 
 export default SessionEditor;

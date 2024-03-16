@@ -138,4 +138,4 @@ function SessionProvider({ children }: SessionProviderProps) {
     );
 }
 
-export { useSession, useSessionDispatch, SessionProvider };
+export { useSession, useSessionDispatch, SessionProvider, SessionAction };

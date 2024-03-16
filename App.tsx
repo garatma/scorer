@@ -2,29 +2,26 @@ import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { PaperProvider } from 'react-native-paper';
 import Home from './src/Home';
-import { SessionProvider } from './src/context/SessionContext';
-import {
-    ColorSchemeProvider,
-    useColorScheme,
-} from './src/colorSchemes/context/ColorSchemeContext';
+import { SessionProvider } from './src/contexts/SessionContext';
+import { ConfigProvider, useConfig } from './src/contexts/ConfigContext';
 
 const App = () => {
     return (
         <SessionProvider>
-            <ColorSchemeProvider>
+            <ConfigProvider>
                 <AppWithPaper />
-            </ColorSchemeProvider>
+            </ConfigProvider>
         </SessionProvider>
     );
 };
 
 const AppWithPaper = () => {
-    const { paperTheme, colorScheme } = useColorScheme();
-    const statusBarBackgroundColor = paperTheme.colors?.background;
-    const statusBarStyle = colorScheme === 'dark' ? 'light' : 'dark';
+    const { colors } = useConfig();
+    const statusBarBackgroundColor = colors.paperTheme.colors?.background;
+    const statusBarStyle = colors.colorScheme === 'dark' ? 'light' : 'dark';
 
     return (
-        <PaperProvider theme={paperTheme}>
+        <PaperProvider theme={colors.paperTheme}>
             <SessionProvider>
                 <StatusBar
                     style={statusBarStyle}
