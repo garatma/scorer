@@ -5,15 +5,17 @@ import { TextInput } from 'react-native-paper';
 import PlayerComponent from '../../components/PlayerComponent';
 import { useSession, useSessionDispatch } from '../../contexts/SessionContext';
 import { Player } from './types';
+import { useConfig } from '../../contexts/ConfigContext';
 
 const Session = () => {
+    const { victoryScore } = useConfig();
     const session = useSession();
     const dispatch = useSessionDispatch();
     const [showAnimation, setShowAnimation] = useState(false);
 
     const onChangeScore = (player: Player) => {
         return (score: string) => {
-            if (Number(score) === 5) {
+            if (Number(score) === Number(victoryScore)) {
                 // TODO: can this throw an exception?
                 setShowAnimation(true);
             }
@@ -45,7 +47,7 @@ const Session = () => {
             ></FlatList>
             {showAnimation && (
                 <ConfettiCannon
-                    count={100}
+                    count={150}
                     origin={{ x: -10, y: -10 }}
                     fadeOut
                     // explosionSpeed={1000}
